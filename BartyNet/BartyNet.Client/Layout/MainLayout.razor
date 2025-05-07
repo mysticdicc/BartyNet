@@ -1,0 +1,56 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider Theme="customTheme"/>
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Pets" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <div style="margin-left: auto; margin-right: 0;">
+            <LoginOrOut />
+        </div>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudGrid Spacing="0" Style="padding: 2rem;">
+            <MudItem xs="2"/>
+            <MudItem xs="8">
+                <div style="border-radius: 1rem; background-color: #4f2378; padding: 1rem; box-shadow: rgba(0, 0, 0, 0.15) 5px 5px;">
+                    @Body
+                </div>
+            </MudItem>
+            <MudItem xs="2"/>
+        </MudGrid>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    MudTheme customTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight() 
+        {
+            AppbarBackground = "#4f2378",
+            DrawerBackground = "#4f2378",
+            Background = "#563575",
+            TextPrimary = "#fefcff",
+            TextSecondary = "#fefcff",
+            DrawerText = "#fefcff",
+            Info = "#c364fa",
+            Primary = "#c364fa",
+            DrawerIcon = "#c364fa",
+            Dark = "#2d1345"
+        }
+    };
+
+    //<img src="/img/web/dog-paw.svg"/>
+}

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BartyNet", "BartyNet\BartyNet\BartyNet.csproj", "{0069F881-A75B-4F6F-A86C-E84DFCAEA818}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BartyNet.Client", "BartyNet\BartyNet.Client\BartyNet.Client.csproj", "{D8F5F612-8D22-4138-BB3F-87627A4CDD30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BartyLib", "BartyLib\BartyLib.csproj", "{FCF4C9BE-AD20-48D3-9BA0-498B74FB26C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0069F881-A75B-4F6F-A86C-E84DFCAEA818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0069F881-A75B-4F6F-A86C-E84DFCAEA818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0069F881-A75B-4F6F-A86C-E84DFCAEA818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0069F881-A75B-4F6F-A86C-E84DFCAEA818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8F5F612-8D22-4138-BB3F-87627A4CDD30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8F5F612-8D22-4138-BB3F-87627A4CDD30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8F5F612-8D22-4138-BB3F-87627A4CDD30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8F5F612-8D22-4138-BB3F-87627A4CDD30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCF4C9BE-AD20-48D3-9BA0-498B74FB26C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCF4C9BE-AD20-48D3-9BA0-498B74FB26C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCF4C9BE-AD20-48D3-9BA0-498B74FB26C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCF4C9BE-AD20-48D3-9BA0-498B74FB26C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

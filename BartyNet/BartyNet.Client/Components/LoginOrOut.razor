@@ -1,0 +1,38 @@
+﻿@page "/login"
+@implements IDisposable
+@inject NavigationManager Navigation
+
+<div>
+    <AuthorizeView>
+        <Authorized>
+            <form action="authentication/logout" method="post" style="height: 100%; width: fit-content;">
+                <AntiforgeryToken />
+                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Logout" class="navlink" style="height: 100%; width: fit-content;" Variant="Variant.Text" />
+            </form>
+        </Authorized>
+        <NotAuthorized>
+            <a href="authentication/login" style="height: 100%; width: 100%; width: fit-content;">
+                <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Person" class="navlink" style="height: 100%; width: fit-content;" Variant="Variant.Text" />
+            </a>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = Navigation.Uri;
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = Navigation.Uri;
+        StateHasChanged();
+    }
+
+    public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;
+}

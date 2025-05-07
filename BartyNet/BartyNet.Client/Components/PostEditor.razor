@@ -1,0 +1,153 @@
+﻿@inject WebsitePostAPI WebsitePostAPI
+
+<div style="padding: 1rem; width: 100%;">
+    <div style="border: solid; border-width: 1px; border-color: white; border-radius: 1rem;">
+        <MudGrid Spacing="1" Style="padding: 1rem;">
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2">
+                    @websitePost.Id
+                </MudText>
+            </MudItem>
+            <MudItem xs="8">
+                <MudTextField Label="Title" @bind-Value="@websitePost.Title" Variant="Variant.Outlined" Style="width: 98%;" TextChanged="@(() => ErrorCheck())" Error="@titleError" />
+            </MudItem>
+            <MudItem xs="4">
+                <MudTextField Label="Created" @bind-Value="@websitePost.Created" Disabled="true" Variant="Variant.Outlined"/>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Body" @bind-Value="@websitePost.Body" Variant="Variant.Outlined" Lines="15" TextChanged="@(() => ErrorCheck())" Error="@bodyError" />
+            </MudItem>
+            <MudItem xs="12" Style="display: flex; gap: 1rem;">
+                <div style="width: 6rem; height: 6rem; border-style: dashed; border-color: grey; border-width: 1px; position: relative; display: flex; justify-content: center; align-content: center; margin-bottom: 2rem;">
+                    <label for="upload">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" Style="width: 100%; height: 100%;" Size="Size.Small"/>
+                    </label>
+
+                    <InputFile id="upload" style="width: 0%; height: 0%; overflow: hidden;" onchange="@(args => UploadImage(args))" accept=".png, .jpg, .jpeg" />
+                </div>
+                @foreach (Image image in websitePost.Images) 
+                {
+                    <div style="width: 6rem; height: 8rem; position: relative;">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteImage(image))" />
+                        <img src="@image.RemotePath" id="@image.Id" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                    </div>
+                }
+                @foreach (string imageStr in newImagesBase64) 
+                {
+                    <div style="width: 6rem; height: 8rem; position: relative;">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteImage(imageStr))"/>
+                        <img src="@imageStr" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                    </div>
+                }
+            </MudItem>
+            <MudItem xs="12" Style="flex-direction: row; justify-content: right; display: flex;">
+                <MudButton StartIcon="@Icons.Material.Filled.Cancel" OnClick="@OnClickCancel" Variant="Variant.Outlined" Style="padding-left: 1rem;">Cancel</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Save" OnClick="@OnClickSave" Variant="Variant.Outlined" Style="margin-right: 0; margin-left: auto; padding-right: 1rem;">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required WebsitePost websitePost { get; set; }
+    [Parameter] public required EventCallback<bool> editorHidden { get; set; }
+
+    bool isNew;
+    List<string> newImagesBase64 = [];
+    List<Image> newImages = [];
+
+    bool bodyError;
+    bool titleError;
+
+    protected override void OnInitialized()
+    {
+        if (websitePost.Title == String.Empty && websitePost.Body == String.Empty) 
+        {
+            isNew = true;
+            ErrorCheck();
+        } 
+        else 
+        {
+            isNew = false;
+        }
+
+        base.OnInitialized();
+    }
+
+    async Task OnClickSave() {
+        if (titleError || bodyError) 
+        {
+            return;
+        } 
+        else 
+        {
+            if (newImages.Count > 0)
+            {
+                websitePost.Images.AddRange(newImages);
+            }
+
+            if (isNew)
+            {
+                await WebsitePostAPI.AddPost(websitePost);
+                await editorHidden.InvokeAsync(true);
+            }
+            else
+            {
+                await WebsitePostAPI.UpdatePost(websitePost);
+                await editorHidden.InvokeAsync(true);
+            }
+        }
+    }
+
+    async Task OnClickCancel() 
+    {
+        await editorHidden.InvokeAsync(true);
+    }
+
+    async Task UploadImage(InputFileChangeEventArgs args)
+    {
+        var name = args.File.Name.Split('.')[0];
+        var ext = args.File.Name.Split('.')[1];
+        var image = new Image(name, ext);
+        string base64 = await Image.ConvertToBase64(args.File.OpenReadStream(10000000));
+        image.Base64String = base64;
+
+        newImages.Add(image);
+        newImagesBase64.Add($"data:{args.File.ContentType};base64, {base64}");
+    }
+
+    void DeleteImage(string base64) 
+    {
+        newImagesBase64.Remove(base64);
+        StateHasChanged();
+    }
+
+    void DeleteImage(Image image) 
+    {
+        websitePost.Images.Remove(image);
+        StateHasChanged();
+    }
+
+    void ErrorCheck() 
+    {
+        if (websitePost.Body == String.Empty)
+        {
+            bodyError = true;
+        }
+        else
+        {
+            bodyError = false;
+        }
+
+        if (websitePost.Title == String.Empty)
+        {
+            titleError = true;
+        }
+        else
+        {
+            titleError = false;
+        }
+
+        StateHasChanged();
+    }
+}

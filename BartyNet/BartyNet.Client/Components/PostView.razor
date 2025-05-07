@@ -1,0 +1,41 @@
+﻿<div style="padding: 1rem; width: 100%;">
+    <div style="border: solid; border-width: 1px; border-color: #411c63; border-radius: 1rem; width: 100%; z-index: 100; background-color: #602a91;">
+        <div style="background-color: #411c63; width: 100%; border-radius: 1rem; z-index: 150;">
+            <div style="width: 100%; padding-left: 0.5rem; padding-top: 0.3rem; padding-bottom: 0.1rem; padding-right: 0.5rem;">
+                <MudText Typo="Typo.h4">
+                    @websitePost.Title
+                </MudText>
+            </div>
+            <div style="width: 100%; display: flex; flex-direction: row; padding-left: 0.5rem; padding-right: 0.5rem; padding-bottom: 0.3rem;">
+                <MudText Typo="Typo.body2">
+                    Created: @websitePost.Created
+                </MudText>
+                <MudText Typo="Typo.body2" Style="margin-right: 0; margin-left: auto;">
+                    Last Updated: @websitePost.LastSubmit
+                </MudText>
+            </div>
+        </div>
+        <MudGrid Spacing="0" Style="padding: 1rem;">
+            <MudItem xs="12">
+                <MudMarkdown Value="@websitePost.Body"/>
+            </MudItem>
+            @if (websitePost.Images.Count > 0)
+            {
+                <MudItem xs="12">
+                    <MudCarousel TData="object">
+                        @foreach (Image image in websitePost.Images)
+                        {
+                            <MudCarouselItem>
+                                <img src="@image.RemotePath" />
+                            </MudCarouselItem>
+                        }
+                    </MudCarousel>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required WebsitePost websitePost { get; set; }
+}

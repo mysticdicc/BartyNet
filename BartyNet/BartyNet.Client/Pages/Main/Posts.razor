@@ -1,0 +1,118 @@
+﻿@inject WebsitePostAPI WebsitePostAPI
+@page "/posts/{postTypeString}"
+
+<AuthorizeView>
+    <Authorized>
+        <div style="width: 100%; margin-left: 1rem; margin-right: 1rem; margin-bottom: 1rem;">
+            <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@OnClickAdd">Add New Post</MudButton>
+        </div>
+        @if (!newHidden)
+        {
+            if (null != postType && postType.HasValue)
+            {
+                <PostEditor websitePost="(new WebsitePost(postType.Value))" editorHidden="@NewPostEventCallback"/>
+            }
+        }
+    </Authorized>
+</AuthorizeView>
+
+@if (null != posts) {
+    foreach (WebsitePost post in posts) {
+        <AuthorizeView>
+            <Authorized>
+                <div style="margin-left: 1rem; margin-right: 1rem;">
+                    <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex;">
+                        <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit(post.Id))" Style="padding-left: 1rem;">Edit</MudButton>
+                        <MudText Typo="Typo.body2" Style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;" Align="Align.Center">
+                            @post.Id
+                        </MudText>
+                        <MudButton EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => OnCLickDelete(post))" Style="padding-right: 1rem; margin-right: 0; margin-left: auto;">Delete</MudButton>
+                    </div>
+                </div> 
+            </Authorized>
+        </AuthorizeView>
+
+        @if (postEditHidden[post.Id]) 
+        {
+            <PostView websitePost="post"/>
+        } 
+        else 
+        {
+            <PostEditor websitePost="post" editorHidden="@((e) => EditPostEventCallback(e, post))"/>
+        }
+    }
+}
+
+@code {
+    [Parameter] required public string postTypeString { get; set; }
+    WebsitePost.PostType? postType { get; set; }
+
+    List<WebsitePost>? posts;
+    Dictionary<Guid, bool> postEditHidden = new();
+    bool newHidden = true;
+
+    async protected override Task OnParametersSetAsync()
+    {
+        posts = [];
+
+        if (Enum.TryParse<WebsitePost.PostType>(postTypeString, true, out var parsed))
+        {
+            postType = parsed;
+        }
+        else
+        {
+            postType = null;
+        }
+
+        await FetchPosts();
+        await base.OnParametersSetAsync();
+    }
+
+    async Task FetchPosts() 
+    {
+        if (null != postType) 
+        {
+            posts = await WebsitePostAPI.GetByType(postType.Value);
+        }
+
+        postEditHidden = new();
+
+        if (posts != null)
+        {
+            foreach (var post in posts)
+            {
+                if (!postEditHidden.ContainsKey(post.Id))
+                {
+                    postEditHidden.Add(post.Id, true);
+                }
+            }
+        }
+    }
+
+    void OnClickEdit(Guid id)
+    {
+        postEditHidden[id] = !postEditHidden[id];
+    }
+
+    void OnClickAdd() 
+    {
+        newHidden = !newHidden;
+    }
+
+    async Task OnCLickDelete(WebsitePost post) 
+    {
+        await WebsitePostAPI.DeletePost(post.Id);
+        await FetchPosts();
+    }
+
+    async Task NewPostEventCallback(bool callback) {
+        newHidden = callback;
+        await FetchPosts();
+    }
+
+    async Task EditPostEventCallback(bool callback, WebsitePost post)
+    {
+        postEditHidden[post.Id] = callback;
+        await FetchPosts();
+    }
+}
