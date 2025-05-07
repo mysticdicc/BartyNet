@@ -12,6 +12,7 @@ namespace BartyNet.Data
         {
         }
         public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<ThumbnailImage> Thumbnails { get; set; }
         public virtual DbSet<WebsitePost> WebsitePosts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +22,25 @@ namespace BartyNet.Data
 
                 entity.Property(e => e.Id);
                 entity.Property(e => e.Name)
+                    .HasMaxLength(100)
+                    .IsRequired();
+                entity.Property(e => e.LocalPath)
+                    .HasMaxLength(150)
+                    .IsRequired();
+                entity.Property(e => e.RemotePath)
+                    .HasMaxLength(150)
+                    .IsRequired();
+                entity.Property(e => e.FileExtension)
+                    .HasMaxLength(25)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<ThumbnailImage>(entity =>
+            {
+                entity.ToTable("thumbnail_images");
+
+                entity.Property(e => e.Id);
+                entity.Property(e => e.ThumbnailName)
                     .HasMaxLength(100)
                     .IsRequired();
                 entity.Property(e => e.LocalPath)
@@ -56,6 +76,11 @@ namespace BartyNet.Data
                 entity.HasMany(e => e.Images)
                     .WithOne(e => e.WebsitePost)
                     .HasForeignKey(e => e.PostId)
+                    .IsRequired(false);
+
+                entity.HasOne(e => e.ThumbnailImage)
+                    .WithOne(e => e.ThumbnailPost)
+                    .HasForeignKey<ThumbnailImage>(e => e.PostId)
                     .IsRequired(false);
             });
 

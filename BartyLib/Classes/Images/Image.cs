@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BartyLib.Classes.Posts;
+using System.Xml.Linq;
 
 namespace BartyLib.Classes.Images
 {
@@ -27,7 +28,7 @@ namespace BartyLib.Classes.Images
         {
             Id = Guid.NewGuid();
             LocalPath = $"./wwwroot/img/{Id}.{fileExtension}";
-            RemotePath = $"https://barty.danknet.uk/img/{Id}.{fileExtension}";
+            RemotePath = $"https://lifeofbarty.danknet.uk/img/{Id}.{fileExtension}";
             Name = name;
             FileExtension = fileExtension;
         }
@@ -85,6 +86,29 @@ namespace BartyLib.Classes.Images
             {
                 throw new Exception("File not exist");
             }
+        }
+    }
+
+    public class ThumbnailImage
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+        public string ThumbnailName { get; set; }
+        public string LocalPath { get; set; }
+        public string RemotePath { get; set; }
+        public string FileExtension { get; set; }
+        [NotMapped] public string? Base64String { get; set; }
+        public Guid? PostId { get; set; }
+        [JsonIgnore] public WebsitePost? ThumbnailPost { get; set; }
+
+        public ThumbnailImage(string thumbnailName, string fileExtension)
+        {
+            Id = Guid.NewGuid();
+            LocalPath = $"./wwwroot/img/{Id}.{fileExtension}";
+            RemotePath = $"https://lifeofbarty.danknet.uk/img/{Id}.{fileExtension}";
+            ThumbnailName = thumbnailName;
+            FileExtension = fileExtension;
         }
     }
 }

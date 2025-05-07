@@ -1,9 +1,21 @@
 ﻿@inject WebsitePostAPI WebsitePostAPI
 @page "/posts/{postTypeString}"
 
+
+@if (null != postType)
+{
+    <div style="width: 100%; padding-right: 1rem; padding-left: 1rem;">
+        <div class="posts_header">
+            <MudText Typo="Typo.h3">
+                @postType.Value
+            </MudText>
+        </div>
+    </div>
+}
+
 <AuthorizeView>
     <Authorized>
-        <div style="width: 100%; margin-left: 1rem; margin-right: 1rem; margin-bottom: 1rem;">
+        <div style="width: 100%; margin: 1rem;">
             <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@OnClickAdd">Add New Post</MudButton>
         </div>
         @if (!newHidden)
@@ -42,6 +54,20 @@
         }
     }
 }
+
+<style>
+    .posts_header {
+        width: 100%;
+        background-color: #411c63;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+    }
+</style>
 
 @code {
     [Parameter] required public string postTypeString { get; set; }

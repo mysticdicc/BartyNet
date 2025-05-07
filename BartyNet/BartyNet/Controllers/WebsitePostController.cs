@@ -24,7 +24,7 @@ namespace BartyNet.Controllers
         public string GetAll()
         {
             using var db = _PortfolioFactory.CreateDbContext();
-            return JsonConvert.SerializeObject(db.WebsitePosts.Include(x => x.Images).ToList(),
+            return JsonConvert.SerializeObject(db.WebsitePosts.Include(x => x.ThumbnailImage).Include(x => x.Images).ToList(),
                 Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
@@ -34,7 +34,7 @@ namespace BartyNet.Controllers
         {
             using var db = _PortfolioFactory.CreateDbContext();
             var realGuid = new Guid(id);
-            return JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.Id == realGuid).Include(x => x.Images).FirstOrDefault(),
+            return JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.Id == realGuid).Include(x => x.ThumbnailImage).Include(x => x.Images).FirstOrDefault(),
                 Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
@@ -44,8 +44,9 @@ namespace BartyNet.Controllers
         {
             using var db = _PortfolioFactory.CreateDbContext();
             var postTypeIs = Enum.Parse<WebsitePost.PostType>(postType);
-            return JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.PostTypeIs == postTypeIs).Include(x => x.Images).ToList(),
+            var posts = JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.PostTypeIs == postTypeIs).Include(x => x.ThumbnailImage).Include(x => x.Images).ToList(),
                                     Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            return posts;
 
         }
 
@@ -68,6 +69,13 @@ namespace BartyNet.Controllers
                     }
                 }
 
+                if (null != post.ThumbnailImage && null != post.ThumbnailImage.Base64String) 
+                {
+                    await Image.SaveToFile(post.ThumbnailImage.Base64String, post.ThumbnailImage.LocalPath);
+                    post.ThumbnailImage.PostId = post.Id;
+                    db.Thumbnails.Add(post.ThumbnailImage);
+                }
+
                 db.WebsitePosts.Add(post);
                 await db.SaveChangesAsync();
 
@@ -87,7 +95,7 @@ namespace BartyNet.Controllers
         {
             using var db = _PortfolioFactory.CreateDbContext();
 
-            var existingPost = db.WebsitePosts.Include(x => x.Images).FirstOrDefault(x => x.Id == post.Id);
+            var existingPost = db.WebsitePosts.Include(x => x.ThumbnailImage).Include(x => x.Images).FirstOrDefault(x => x.Id == post.Id);
 
             if (null != existingPost)
             {
@@ -110,6 +118,47 @@ namespace BartyNet.Controllers
                             {
                                 db.Images.Remove(dbImage);
                             }
+                        }
+                    }
+
+                    if (existingPost.ThumbnailImage == null && post.ThumbnailImage != null) 
+                    { 
+                        if (null != post.ThumbnailImage.Base64String)
+                        {
+                            await Image.SaveToFile(post.ThumbnailImage.Base64String, post.ThumbnailImage.LocalPath);
+                            db.Thumbnails.Add(post.ThumbnailImage);
+                            post.ThumbnailImage.PostId = existingPost.Id;
+                        }
+                    } 
+                    else if (existingPost.ThumbnailImage != null && post.ThumbnailImage != null)
+                    {
+                        if (existingPost.ThumbnailImage.Id != post.ThumbnailImage.Id) 
+                        {   
+                            if (null !=  existingPost.ThumbnailImage.Base64String)
+                            {
+                                await Image.DeleteFile(existingPost.ThumbnailImage.LocalPath);
+                                await Image.SaveToFile(post.ThumbnailImage.Base64String!, post.ThumbnailImage.LocalPath);
+                                post.ThumbnailImage.PostId = existingPost.Id;
+
+                                var dbImage = db.Thumbnails.FirstOrDefault(x => x.Id == existingPost.ThumbnailImage.Id);
+
+                                if (null != dbImage)
+                                {
+                                    db.Thumbnails.Remove(dbImage);
+                                }
+
+                                db.Thumbnails.Add(post.ThumbnailImage);
+                            }
+                        }
+                    }
+                    else if (post.ThumbnailImage == null && null != existingPost.ThumbnailImage)
+                    {
+                        await Image.DeleteFile(existingPost.ThumbnailImage.LocalPath);
+                        var dbImage = db.Thumbnails.FirstOrDefault(x => x.Id == existingPost.ThumbnailImage.Id);
+
+                        if (null != dbImage)
+                        {
+                            db.Thumbnails.Remove(dbImage);
                         }
                     }
 
@@ -166,6 +215,17 @@ namespace BartyNet.Controllers
                                 {
                                     db.Images.Remove(dbImage);
                                 }
+                            }
+                        }
+
+                        if (null != item.ThumbnailImage)
+                        {
+                            await Image.DeleteFile(item.ThumbnailImage.LocalPath);
+                            var dbImage = db.Thumbnails.Find(item.ThumbnailImage.Id);
+
+                            if (null != dbImage)
+                            {
+                                db.Thumbnails.Remove(dbImage);
                             }
                         }
 

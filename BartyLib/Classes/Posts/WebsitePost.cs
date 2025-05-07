@@ -17,8 +17,11 @@ namespace BartyLib.Classes.Posts
         public DateTime Created { get; set; }
         public DateTime LastSubmit { get; set; }
         public List<Image> Images { get; set; }
+        public ThumbnailImage? ThumbnailImage { get; set; }
         public enum PostType { Blog, Charity, Rights }
         public PostType PostTypeIs { get; set; }
+
+        public WebsitePost() { }
 
         public WebsitePost(PostType postType)
         {
@@ -32,7 +35,7 @@ namespace BartyLib.Classes.Posts
             
         }
 
-        public WebsitePost(string title, string body, List<Image> images, PostType postTypeIs)
+        public WebsitePost(string title, string body, List<Image> images, PostType postTypeIs, ThumbnailImage? thumbnailImage)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -41,9 +44,14 @@ namespace BartyLib.Classes.Posts
             Images = images;
             PostTypeIs = postTypeIs;
             Created = DateTime.Now;
+
+            if (null != thumbnailImage)
+            {
+                ThumbnailImage = thumbnailImage;
+            }
         }
 
-        public WebsitePost(string title, string body, PostType postTypeIs)
+        public WebsitePost(string title, string body, PostType postTypeIs, ThumbnailImage? thumbnailImage)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -52,10 +60,15 @@ namespace BartyLib.Classes.Posts
             Images = [];
             PostTypeIs = postTypeIs;
             Created = DateTime.Now;
+
+            if (null != thumbnailImage)
+            {
+                ThumbnailImage = thumbnailImage;
+            }
         }
 
         [JsonConstructor]
-        public WebsitePost(Guid Id, string Title, string Body, DateTime LastSubmit, List<Image> Images, PostType PostTypeIs, DateTime Created)
+        public WebsitePost(Guid Id, string Title, string Body, DateTime LastSubmit, List<Image> Images, PostType PostTypeIs, DateTime Created, ThumbnailImage? ThumbnailImage)
         {
             this.Id = Id;
             this.Title = Title;
@@ -64,6 +77,11 @@ namespace BartyLib.Classes.Posts
             this.Images = Images;
             this.PostTypeIs = PostTypeIs;
             this.Created = Created;
+
+            if (null != ThumbnailImage)
+            {
+                this.ThumbnailImage = ThumbnailImage;
+            }
         }
     }
 }

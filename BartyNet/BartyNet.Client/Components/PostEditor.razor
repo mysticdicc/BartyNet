@@ -8,6 +8,32 @@
                     @websitePost.Id
                 </MudText>
             </MudItem>
+            @if (null == websitePost.ThumbnailImage && null == newThumbnailString) 
+            {
+                <MudItem xs="12">
+                    <div style="width: 6rem; height: 6rem; border-style: dashed; border-color: grey; border-width: 1px; position: relative; display: flex; justify-content: center; align-content: center; margin-bottom: 2rem;">
+                        <label for="upload">
+                            <MudIcon Icon="@Icons.Material.Filled.Add" Style="width: 100%; height: 100%;" Size="Size.Small" />
+                        </label>
+
+                        <InputFile id="upload" style="width: 0%; height: 0%; overflow: hidden;" onchange="@(args => UploadThumbnailImage(args))" accept=".png, .jpg, .jpeg" />
+                    </div>
+                </MudItem>
+            } 
+            else if (null != websitePost.ThumbnailImage) 
+            {
+                <div style="width: 6rem; height: 8rem; position: relative;">
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(websitePost.ThumbnailImage))" />
+                    <img src="@websitePost.ThumbnailImage.RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                </div>
+            } 
+            else if (null != newThumbnailString) 
+            {
+                <div style="width: 6rem; height: 8rem; position: relative;">
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(newThumbnailString))" />
+                    <img src="@newThumbnailString" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                </div>
+            }
             <MudItem xs="8">
                 <MudTextField Label="Title" @bind-Value="@websitePost.Title" Variant="Variant.Outlined" Style="width: 98%;" TextChanged="@(() => ErrorCheck())" Error="@titleError" />
             </MudItem>
@@ -29,7 +55,7 @@
                 {
                     <div style="width: 6rem; height: 8rem; position: relative;">
                         <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteImage(image))" />
-                        <img src="@image.RemotePath" id="@image.Id" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                        <img src="@image.RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
                     </div>
                 }
                 @foreach (string imageStr in newImagesBase64) 
@@ -56,6 +82,9 @@
     List<string> newImagesBase64 = [];
     List<Image> newImages = [];
 
+    ThumbnailImage? thumbnailImage;
+    string? newThumbnailString;
+
     bool bodyError;
     bool titleError;
 
@@ -69,6 +98,10 @@
         else 
         {
             isNew = false;
+            if (null != websitePost.ThumbnailImage) 
+            {
+                thumbnailImage = websitePost.ThumbnailImage;
+            }
         }
 
         base.OnInitialized();
@@ -116,6 +149,18 @@
         newImagesBase64.Add($"data:{args.File.ContentType};base64, {base64}");
     }
 
+    async Task UploadThumbnailImage(InputFileChangeEventArgs args) 
+    {
+        var name = args.File.Name.Split('.')[0];
+        var ext = args.File.Name.Split('.')[1];
+        var image = new ThumbnailImage(name, ext);
+        string base64 = await Image.ConvertToBase64(args.File.OpenReadStream(10000000));
+        image.Base64String = base64;
+
+        newThumbnailString = $"data:{args.File.ContentType};base64, {base64}";
+        websitePost.ThumbnailImage = image;
+    }
+
     void DeleteImage(string base64) 
     {
         newImagesBase64.Remove(base64);
@@ -125,6 +170,18 @@
     void DeleteImage(Image image) 
     {
         websitePost.Images.Remove(image);
+        StateHasChanged();
+    }
+
+    void DeleteThumbnailImage(string base64) 
+    {
+        newThumbnailString = null;
+        StateHasChanged();
+    }
+
+    void DeleteThumbnailImage(ThumbnailImage image)
+    {
+        websitePost.ThumbnailImage = null;
         StateHasChanged();
     }
 
