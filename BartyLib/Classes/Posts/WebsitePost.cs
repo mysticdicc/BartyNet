@@ -21,7 +21,7 @@ namespace BartyLib.Classes.Posts
         public enum PostType { Blog, Charity, Rights }
         public PostType PostTypeIs { get; set; }
 
-        public WebsitePost() { }
+        private WebsitePost() { }
 
         public WebsitePost(PostType postType)
         {

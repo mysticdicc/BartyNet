@@ -1,4 +1,6 @@
-﻿@page "/home"
+﻿@inject WebsitePostAPI WebsitePostAPI
+
+@page "/home"
 
 <PageTitle>Home</PageTitle>
 
@@ -6,7 +8,7 @@
     <div style="width: 100%; padding-left: 1rem; padding-right: 1rem;">
         <div style="width: 100%">
             <MudGrid Spacing="0">
-                <MudItem xs="12" md="5" lg="5" Style="padding: 0;">
+                <MudItem xs="12" sm="8" md="5" lg="5" Style="padding: 0;">
                     <div style="display: flex; flex-direction: column; justify-content: center; align-content: center; padding: 2rem;  height: 100%; width: 100%;">
                         <MudText Typo="Typo.h3" Align="Align.Center" Style="padding-bottom: 1rem;">
                             Life of Barty
@@ -18,30 +20,35 @@
                         </div>
                     </div>
                 </MudItem>
-                <MudItem xs="12" md="7" lg="7" Style="display: flex; flex-direction: row; justify-content: center; padding: 0;">
+                <MudItem xs="12" sm="4" md="7" lg="7" Style="display: flex; flex-direction: row; justify-content: center; padding: 0;">
                     <MudImage Src="/img/web/landscape_barty.jpg" class="header_image" Fluid="true" ObjectFit="ObjectFit.Contain" />
                 </MudItem>
             </MudGrid>
         </div>
     </div> 
     <MudDivider />
-    <MudText Typo="Typo.h5">
+    <MudText Typo="Typo.h5" Style="padding-left: 1rem; padding-right: 1rem;">
         Recent Blog Posts
     </MudText>
-    <MudGrid>
-        <MudItem xs="12">
-
-        </MudItem>
-    </MudGrid>
+    @if (null != recentPosts) 
+    {
+        foreach (var post in recentPosts) 
+        {
+            <RecentPost websitePost="post"/>
+        }
+    }
 </MudStack>
 
-<style>
-    .header_image {
-        border-radius: 1rem;
-        max-height: 20rem;
-        max-width: 100%;
-        scale: 90%;
-        filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
-        line-height: 0;
+@code {
+    List<WebsitePost>? recentPosts;
+
+    async protected override Task OnInitializedAsync()
+    {
+        await FetchRecentPosts();
+        await base.OnInitializedAsync();
     }
-</style>
+
+    async Task FetchRecentPosts() {
+        recentPosts = await WebsitePostAPI.GetRecentByType(WebsitePost.PostType.Blog);
+    }
+}

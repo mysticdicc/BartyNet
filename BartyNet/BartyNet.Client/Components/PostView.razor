@@ -18,17 +18,17 @@
             </div>
         </div>
         <MudGrid Spacing="0" Style="padding: 1rem;">
-            <MudItem xs="12">
-                <MudMarkdown Value="@websitePost.Body"/>
+            <MudItem xs="12" Style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; color: white;">
+                @((MarkupString)(Markdown.ToHtml(websitePost.Body)))
             </MudItem>
             @if (websitePost.Images.Count > 0)
             {
-                <MudItem xs="12">
-                    <MudCarousel TData="object">
+                <MudItem xs="12" Style="height: 20rem;">
+                    <MudCarousel TData="object" Style="height: 19.5rem;">
                         @foreach (Image image in websitePost.Images)
                         {
-                            <MudCarouselItem>
-                                <img src="@image.RemotePath" />
+                            <MudCarouselItem Style="width: 100%; display: flex;">
+                                <MudImage src="@image.RemotePath" class="image" Fluid="true" ObjectFit="ObjectFit.Contain" />
                             </MudCarouselItem>
                         }
                     </MudCarousel>
@@ -53,9 +53,20 @@
     .card_header {
         background-color: #411c63;
         width: 100%;
-        border-radius: 1rem;
+        border-radius: 1rem 1rem 0rem 0rem;
         z-index: 150;
         box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+    }
+
+    .image {
+        border-radius: 1rem;
+        max-height: 19.5rem;
+        max-width: 100%;
+        scale: 90%;
+        filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
+        line-height: 0;
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>
 

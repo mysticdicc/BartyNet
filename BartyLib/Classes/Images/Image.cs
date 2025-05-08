@@ -27,8 +27,8 @@ namespace BartyLib.Classes.Images
         public Image(string name, string fileExtension)
         {
             Id = Guid.NewGuid();
-            LocalPath = $"./wwwroot/img/{Id}.{fileExtension}";
-            RemotePath = $"https://lifeofbarty.danknet.uk/img/{Id}.{fileExtension}";
+            LocalPath = $"./wwwroot/img/upload/{Id}.{fileExtension}";
+            RemotePath = $"https://lifeofbarty.danknet.uk/img/upload/{Id}.{fileExtension}";
             Name = name;
             FileExtension = fileExtension;
         }
@@ -81,10 +81,6 @@ namespace BartyLib.Classes.Images
                 {
                     throw new Exception(ex.Message);
                 }
-            }
-            else
-            {
-                throw new Exception("File not exist");
             }
         }
     }

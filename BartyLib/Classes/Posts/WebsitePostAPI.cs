@@ -56,6 +56,27 @@ namespace BartyLib.Classes.Posts
             }
         }
 
+        public async Task<List<WebsitePost>> GetRecentByType(WebsitePost.PostType postType)
+        {
+            try
+            {
+                var posts = await _httpClient.GetFromJsonAsync<List<WebsitePost>>($"/{controller}/get/last3/bytype?posttype={postType}");
+
+                if (null != posts)
+                {
+                    return posts;
+                }
+                else
+                {
+                    throw new Exception("No posts");
+                }
+            } 
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task AddPost(WebsitePost post)
         {
             try

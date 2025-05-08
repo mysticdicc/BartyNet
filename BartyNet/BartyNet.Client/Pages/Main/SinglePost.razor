@@ -1,0 +1,24 @@
+﻿@inject WebsitePostAPI WebsitePostAPI
+
+@page "/posts/single/{guid}"
+
+@if (null != post) 
+{
+    <PostView websitePost="post"/>
+}
+
+@code {
+    [Parameter] required public string guid { get; set; }
+    WebsitePost? post;
+
+    async protected override Task OnParametersSetAsync()
+    {
+        await FetchPost();
+        await base.OnParametersSetAsync();
+    }
+
+    async Task FetchPost() 
+    {
+        post = await WebsitePostAPI.GetById(guid);
+    }
+}

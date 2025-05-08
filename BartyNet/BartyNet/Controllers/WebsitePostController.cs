@@ -44,10 +44,25 @@ namespace BartyNet.Controllers
         {
             using var db = _PortfolioFactory.CreateDbContext();
             var postTypeIs = Enum.Parse<WebsitePost.PostType>(postType);
-            var posts = JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.PostTypeIs == postTypeIs).Include(x => x.ThumbnailImage).Include(x => x.Images).ToList(),
+            return JsonConvert.SerializeObject(db.WebsitePosts.Where(x => x.PostTypeIs == postTypeIs).Include(x => x.ThumbnailImage).Include(x => x.Images).ToList(),
                                     Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            return posts;
+        }
 
+        [HttpGet]
+        [Route("[controller]/get/last3/bytype")]
+        public string GetRecentByType(string postType)
+        {
+            using var db = _PortfolioFactory.CreateDbContext();
+            var postTypeIs = Enum.Parse<WebsitePost.PostType>(postType);
+
+            var list = db.WebsitePosts.Where(x => x.PostTypeIs == postTypeIs)
+                                                                .Include(x => x.ThumbnailImage)
+                                                                .Include(x => x.Images)
+                                                                .ToList();
+
+            list = list.OrderByDescending(x => x.Created).TakeLast(3).ToList();
+
+            return JsonConvert.SerializeObject(list, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
         [HttpPost]
