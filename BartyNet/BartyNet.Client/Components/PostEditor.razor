@@ -3,11 +3,6 @@
 <div style="padding: 1rem; width: 100%;">
     <div style="border: solid; border-width: 1px; border-color: white; border-radius: 1rem;">
         <MudGrid Spacing="1" Style="padding: 1rem;">
-            <MudItem xs="12">
-                <MudText Typo="Typo.body2">
-                    @websitePost.Id
-                </MudText>
-            </MudItem>
             @if (null == websitePost.ThumbnailImage && null == newThumbnailString) 
             {
                 <MudItem xs="12">
@@ -24,23 +19,29 @@
             {
                 @if (null != thumbnailImage) 
                 {
-                    <div style="width: 6rem; height: 8rem; position: relative;">
-                        <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(websitePost.ThumbnailImage))" />
-                        <img src="@thumbnailImage.RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
-                    </div>
+                    <MudItem xs="12">
+                        <div style="width: 6rem; height: 8rem; position: relative;">
+                            <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(websitePost.ThumbnailImage))" />
+                            <img src="@thumbnailImage.RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                        </div>
+                    </MudItem>
+
                 }
             } 
             else if (null != newThumbnailString) 
             {
-                <div style="width: 6rem; height: 8rem; position: relative;">
-                    <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(newThumbnailString))" />
-                    <img src="@newThumbnailString" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
-                </div>
+                <MudItem xs="12">
+                    <div style="width: 6rem; height: 8rem; position: relative;">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(newThumbnailString))" />
+                        <img src="@newThumbnailString" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                    </div>
+                </MudItem>
+
             }
-            <MudItem xs="8">
+            <MudItem xs="8" Style="padding-left: 1rem;">
                 <MudTextField Label="Title" @bind-Value="@websitePost.Title" Variant="Variant.Outlined" Style="width: 98%;" TextChanged="@(() => ErrorCheck())" Error="@titleError" />
             </MudItem>
-            <MudItem xs="4">
+            <MudItem xs="4" Style="padding-right: 1rem;">
                 <MudTextField Label="Created" @bind-Value="@websitePost.Created" Disabled="true" Variant="Variant.Outlined"/>
             </MudItem>
             <MudItem xs="12">

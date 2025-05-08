@@ -1,147 +1,113 @@
 ﻿@inject IJSRuntime JSRuntime
 
-<div style="padding: 1rem; width: 100%">
+<div class="mkd_edit_box">
     <div style="width: 100%; border-radius: 1rem; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px; border-color: #411c63; border-style: solid; border-width: 1px;">
-        <div class="toolbar">
+        <div class="mkd_edit_toolbar">
             <div style="padding: 0.5rem; display: flex; height: 100%;">
-                <MudIcon Icon="@Icons.Material.Filled.Preview" Class="button" onclick="@(() => OnClickPreview())" />
-                <MudIcon Icon="@Icons.Material.Filled.ListAlt" Class="button" onclick="@(() => OnInsertList())" />
-                <div class="button" onclick="@(() => InsertHeader(1))">
-                    <div class="header_button">
-                        <MudText Typo="Typo.body2" Style="margin: auto;">
-                            H1
-                        </MudText>
+                <MudIcon Icon="@Icons.Material.Filled.Preview" Class="mkd_edit_button" onclick="@(() => OnClickPreview())" />
+                <MudIcon Icon="@Icons.Material.Filled.ListAlt" Class="mkd_edit_button" onclick="@(() => OnInsertList())" />
+                <div class="mkd_dropdown">
+                    <div class="mkd_drop_btn">
+                        <div class="mkd_drop_btn_text">
+                            Add Link
+                        </div>
+                    </div>
+                    <div class="mkd_dropdown_cnt mkd_dropdown_cnt_phone">
+                        <div style="display: flex; width: 100%; flex-wrap: wrap;">
+                            <div class="mkd_cnt_insert_col_left">
+                                <div style="width: 100%">
+                                    Title
+                                </div>
+                                <div style="width: 100%">
+                                    <input class="mkd_cnt_insert_text" @bind-Value="@insertTitle" @bind-Value:event="oninput" />
+                                </div>
+                            </div>
+                            <div class="mkd_cnt_insert_col_right">
+                                <div style="width: 100%">
+                                    URL
+                                </div>
+                                <div style="width: 100%">
+                                    <input class="mkd_cnt_insert_text" @bind-Value="@insertUrl" @bind-Value:event="oninput" />
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; width: 100%; padding-top: 0.5rem;">
+                            <div class="mkd_cnt_insert_btn" onclick="@(() => InsertLink(insertTitle, insertUrl))">
+                                <div class="mkd_drop_btn_text">
+                                    Insert
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="button" onclick="@(() => InsertHeader(2))">
-                    <div class="header_button">
-                        <MudText Typo="Typo.body2" Style="margin: auto;">
-                            H2
-                        </MudText>
+                <div class="mkd_dropdown">
+                    <div class="mkd_drop_btn">
+                        <div class="mkd_drop_btn_text">
+                            Format
+                        </div>
+                    </div>
+                    <div class="mkd_dropdown_cnt">
+                        <div class="mkd_cnt_button" onclick="@(() => InsertHeader(1))">
+                            <div class="mkd_drop_btn_text">
+                                Header 1
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertHeader(2))">
+                            <div class="mkd_drop_btn_text">
+                                Header 2
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertHeader(3))">
+                            <div class="mkd_drop_btn_text">
+                                Header 3
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertBold())">
+                            <div class="mkd_drop_btn_text">
+                                <b>Bold</b>
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertItalic())">
+                            <div class="mkd_drop_btn_text">
+                                <i>Italic</i>
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertStrikethrough())">
+                            <div class="mkd_drop_btn_text">
+                                <s>Strikethrough</s>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="button" onclick="@(() => InsertHeader(3))">
-                    <div class="header_button">
-                        <MudText Typo="Typo.body2" Style="margin: auto;">
-                            H3
-                        </MudText>
-                    </div>
-                </div>
-                <div class="button" onclick="@(() => InsertBold())">
-                    <div class="header_button">
-                        <MudText Typo="Typo.body2" Style="margin: auto;">
-                            <b>B</b>
-                        </MudText>
-                    </div>
-                </div>
-                <div class="button" onclick="@(() => InsertItalic())">
-                    <div class="header_button">
-                        <MudText Typo="Typo.body2" Style="margin: auto;">
-                            <i>i</i>
-                        </MudText>
-                    </div>
-                </div>
-                <MudIcon Icon="@Icons.Material.Filled.AddLink" Class="button" onclick="@(() => InsertLink())"/>
-                <MudIcon Icon="@Icons.Material.Filled.StrikethroughS" Class="button" onclick="@(() => InsertStrikethrough())"/>
             </div>
         </div>
         <div style="width: 100%;">
-            <textarea id="markdown_editor" name="markdown" oninput="@((ChangeEventArgs e) => OnTextChanged(e))" class="textbox" >
+            <textarea id="markdown_editor" name="markdown" oninput="@((ChangeEventArgs e) => OnTextChanged(e))" class="mkd_edit_textbox" >
                 @_editText
             </textarea>
         </div>
     </div>
-    <div hidden="@previewHidden" class="preview_area">
-        <div class="top_preview">
+    <div hidden="@previewHidden" class="mkd_preview_area">
+        <div class="mkd_top_preview">
             <MudText Typo="Typo.h6" Align="Align.Center" Style="padding: 0.5rem;">
                 Preview:
             </MudText>
         </div>
-        <div style="padding: 0.5rem; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; color: white;">
-            @((MarkupString)previewText)
+        <div style="max-height: 100%;">
+            <div class="mkd_preview_text">
+                @((MarkupString)previewText)
+            </div>
         </div>
     </div>
 </div>
-
-<style>
-    .top_preview {
-    width: 100%;
-    background-color: #411c63;
-    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
-    border-radius: 1rem 1rem 0rem 0rem;
-    }
-
-    .preview_area {
-    width: 100%;
-    margin-top: 1rem;
-    background-color: #602a91;
-    border-radius: 1rem;
-    border-color: #411c63;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
-    }
-
-    .toolbar {
-    width: 100%;
-    border-radius: 1rem 1rem 0rem 0rem;
-    background-color: #411c63;
-    }
-
-    .button {
-    width: 2rem;
-    height: 2rem;
-    margin-top: auto;
-    margin-bottom: auto;
-    display: flex;
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
-    }
-
-    .header_button {
-    display: flex;
-    border-color: white;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 0.3rem;
-    width: 1.7rem;
-    height: 1.7rem;
-    margin: auto;
-    }
-
-    .button:hover {
-    box-shadow: rgba(20, 20, 20, 0.15) 2px 2px 2px;
-    cursor: pointer;
-    }
-
-    .textbox {
-    width: 100%;
-    height: 20rem;
-    border-radius: 0rem 0rem 1rem 1rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px; 
-    color: white;
-    background-color: #602a91;
-    box-sizing: border-box;
-    resize: none;
-    }
-</style>
-
-<script>
-    function insertAtCurrentPos(inputString) {
-    var textarea = document.getElementById("markdown_editor");
-    var curPos = textarea.selectionStart;
-
-    let x = textarea.value;
-
-    textarea.value = x.slice(0, curPos) + inputString + x.slice(curPos);
-    }
-</script>
 
 @code {
     [Parameter] required public string editText { get; set; }
     private string _editText = String.Empty;
     [Parameter] public EventCallback<string> EditTextChanged { get; set; }
+
+    string insertTitle = String.Empty;
+    string insertUrl = String.Empty;
 
     async Task OnTextChanged(ChangeEventArgs args) 
     {
@@ -151,6 +117,14 @@
             previewText = Markdown.ToHtml(_editText);
             await EditTextChanged.InvokeAsync(_editText);
         }
+    }
+
+    [JSInvokable("markupTextAdded")]
+    public async Task TextChangedInvokedByJs(string text) 
+    {
+        _editText = text;
+        previewText = Markdown.ToHtml(_editText);
+        await EditTextChanged.InvokeAsync(_editText);
     }
 
     protected override Task OnParametersSetAsync()
@@ -171,12 +145,13 @@
 
     async Task InsertMarkdownFunction(string markdown) 
     {
-        await JSRuntime.InvokeVoidAsync("insertAtCurrentPos", markdown);
+        var dotNetObj = DotNetObjectReference.Create(this);
+        await JSRuntime.InvokeVoidAsync("insertAtCurrentPos", markdown, dotNetObj);
     }
 
     async Task OnInsertList() 
     {
-        await InsertMarkdownFunction("* \n* \n* ");
+        await InsertMarkdownFunction("* list item\n* list item\n* list item");
     }
 
     async Task InsertHeader(int header) 
@@ -184,13 +159,13 @@
         switch(header) 
         {
             case 1:
-                await InsertMarkdownFunction("# ");
+                await InsertMarkdownFunction("\n# header");
                 return;
             case 2:
-                await InsertMarkdownFunction("## ");
+                await InsertMarkdownFunction("\n## header");
                 return;
             case 3:
-                await InsertMarkdownFunction("### ");
+                await InsertMarkdownFunction("\n### header");
                 return;
         }
     }
@@ -205,9 +180,14 @@
         await InsertMarkdownFunction("*italic text*");
     }
 
-    async Task InsertLink()
+    async Task InsertLink(string title, string url)
     {
-        await InsertMarkdownFunction("[linktext](https://www.example.com)");
+        if (title != String.Empty && url != String.Empty) 
+        {
+            await InsertMarkdownFunction($"[{title}]({url})");
+            insertTitle = String.Empty;
+            insertUrl = String.Empty;
+        }
     }
 
     async Task InsertStrikethrough() 

@@ -1,16 +1,16 @@
 ﻿@inject NavigationManager NavManager
 
 <div style="padding: 1rem; width: 100%;">
-    <MudGrid Spacing="0" Class="card_back">
+    <MudGrid Spacing="0" Class="recent_card_back">
         @if (null != websitePost.ThumbnailImage)
         {
             <MudItem lg="2" md="3" sm="0">
-                <div class="card_side">
-                    <MudImage Src="@websitePost.ThumbnailImage.RemotePath" class="post_thumbnail" Fluid="true" ObjectFit="ObjectFit.Contain" />
+                <div class="recent_card_side">
+                    <MudImage Src="@websitePost.ThumbnailImage.RemotePath" class="recent_post_thumbnail" Fluid="true" ObjectFit="ObjectFit.Contain" />
                 </div>
             </MudItem>
             <MudItem lg="10" md="9" sm="12" Style="height: 100%;">
-                <div class="card_top">
+                <div class="recent_card_top">
                     <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-left: auto; margin-right: auto; padding: 0.5rem;">
                         @websitePost.Title
                     </MudText>
@@ -18,7 +18,7 @@
                 <MudGrid Spacing="0">
                     <MudItem xs="12">
                         <div style="padding: 1rem;">
-                            <MudMarkdown Value="@SplitPostBody(websitePost.Body)" />
+                            @((MarkupString)(Markdown.ToHtml(SplitPostBody(websitePost.Body))))
                         </div>
                     </MudItem>
                     <MudItem xs="12">
@@ -32,7 +32,7 @@
         else
         {
             <MudItem xs="12">
-                <div class="card_top" style="border-radius: 1rem 1rem 0rem 0rem;">
+                <div class="recent_card_top" style="border-radius: 1rem 1rem 0rem 0rem;">
                     <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-left: auto; margin-right: auto; padding: 0.5rem;">
                         @websitePost.Title
                     </MudText>
@@ -40,7 +40,7 @@
             </MudItem>
             <MudItem xs="12">
                 <div style="padding: 1rem;">
-                    <MudMarkdown Value="@SplitPostBody(websitePost.Body)" />
+                    @((MarkupString)(Markdown.ToHtml(SplitPostBody(websitePost.Body))))
                 </div>
             </MudItem>
             <MudItem xs="12" Style="display: flex; margin-bottom: 0; margin-top: auto;">
@@ -49,29 +49,6 @@
         }
     </MudGrid>
 </div>
-
-<style>
-    .card_back {
-        border: solid;
-        border-width: 1px;
-        border-color: #411c63;
-        border-radius: 1rem;
-        width: 100%;
-        z-index: 100;
-        background-color: #602a91;
-        box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
-    }
-
-    .post_thumbnail {
-        max-height: 15rem;
-        max-width: 100%;
-        filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
-        line-height: 0;
-        margin: auto;
-        padding: 1rem;
-        border-radius: 2rem;
-    }
-</style>
 
 @code {
     [Parameter] public required WebsitePost websitePost { get; set; }

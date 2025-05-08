@@ -19,9 +19,7 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddMudServices();
-builder.Services.AddMudMarkdownServices();
 builder.Services.AddControllers();
-builder.Services.AddMemoryCache();
 
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("EntraStuff"));

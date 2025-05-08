@@ -1,6 +1,6 @@
-﻿<div style="padding: 1rem; width: 100%;">
-    <div class="card_back">
-        <div class="card_header">
+﻿<div class="post_vw_card_container">
+    <div class="post_vw_card_back">
+        <div class="post_vw_card_header">
             <div style="width: 100%; padding-left: 0.5rem; padding-top: 0.3rem; padding-bottom: 0.1rem; padding-right: 0.5rem;">
                 <div style="padding: 0.5rem;">
                     <MudText Typo="Typo.h4" Align="Align.Center" Style="padding-bottom: 0.5rem;">
@@ -28,7 +28,7 @@
                         @foreach (Image image in websitePost.Images)
                         {
                             <MudCarouselItem Style="width: 100%; display: flex;">
-                                <MudImage src="@image.RemotePath" class="image" Fluid="true" ObjectFit="ObjectFit.Contain" />
+                                <MudImage src="@image.RemotePath" class="post_vw_image" Fluid="true" ObjectFit="ObjectFit.Contain" />
                             </MudCarouselItem>
                         }
                     </MudCarousel>
@@ -37,38 +37,6 @@
         </MudGrid>
     </div>
 </div>
-
-<style>
-    .card_back {
-        border: solid;
-        border-width: 1px;
-        border-color: #411c63;
-        border-radius: 1rem;
-        width: 100%;
-        z-index: 100;
-        background-color: #602a91;
-        box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
-    }
-
-    .card_header {
-        background-color: #411c63;
-        width: 100%;
-        border-radius: 1rem 1rem 0rem 0rem;
-        z-index: 150;
-        box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
-    }
-
-    .image {
-        border-radius: 1rem;
-        max-height: 19.5rem;
-        max-width: 100%;
-        scale: 90%;
-        filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
-        line-height: 0;
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
 
 @code {
     [Parameter] public required WebsitePost websitePost { get; set; }

@@ -7,8 +7,6 @@ using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddMudServices();
-builder.Services.AddMudMarkdownServices();
-builder.Services.AddMemoryCache();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();

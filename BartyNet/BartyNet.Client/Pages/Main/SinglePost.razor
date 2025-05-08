@@ -4,12 +4,36 @@
 
 @if (null != post) 
 {
-    <PostView websitePost="post"/>
+    <AuthorizeView>
+        <Authorized>
+            <div style="margin-left: 1rem; margin-right: 1rem;">
+                <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex;">
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit())" Style="padding-left: 1rem;">Edit</MudButton>
+                    <MudText Typo="Typo.body2" Style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;" Align="Align.Center">
+                        @post.Id
+                    </MudText>
+                    <MudButton EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => OnCLickDelete(post))" Style="padding-right: 1rem; margin-right: 0; margin-left: auto;">Delete</MudButton>
+                </div>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+
+    if (editHidden) 
+    {
+        <PostView websitePost="post" />
+    } 
+    else 
+    {
+        <PostEditor websitePost="post" editorHidden="@((e) => EditPostEventCallback(e, post))"/>
+    }
+
+    
 }
 
 @code {
     [Parameter] required public string guid { get; set; }
     WebsitePost? post;
+    bool editHidden = true;
 
     async protected override Task OnParametersSetAsync()
     {
@@ -20,5 +44,22 @@
     async Task FetchPost() 
     {
         post = await WebsitePostAPI.GetById(guid);
+    }
+
+    void OnClickEdit()
+    {
+        editHidden = !editHidden;
+    }
+
+    async Task OnCLickDelete(WebsitePost post)
+    {
+        await WebsitePostAPI.DeletePost(post.Id);
+        await FetchPost();
+    }
+
+    async Task EditPostEventCallback(bool callback, WebsitePost post)
+    {
+        editHidden = callback;
+        await FetchPost();
     }
 }

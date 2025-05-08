@@ -1,0 +1,30 @@
+.post_vw_card_back {
+    border: solid;
+    border-width: 1px;
+    border-color: #411c63;
+    border-radius: 1rem;
+    width: 100%;
+    z-index: 100;
+    background-color: #602a91;
+    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+}
+
+.post_vw_card_header {
+    background-color: #411c63;
+    width: 100%;
+    border-radius: 1rem 1rem 0rem 0rem;
+    z-index: 150;
+    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+}
+
+.post_vw_card_container {
+    padding: 1rem;
+    width: 100%;
+}
+
+@media screen and (max-width: 960px) {
+    .post_vw_card_container {
+        padding: 0.5rem;
+    }
+}
+

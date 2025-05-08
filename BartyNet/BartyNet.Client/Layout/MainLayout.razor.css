@@ -96,3 +96,29 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+.layout_grid {
+    padding: 2rem;
+}
+
+.layout_body_card {
+    border-radius: 1rem;
+    background-color: #4f2378;
+    margin: 1rem;
+    box-shadow: rgba(20, 20, 20, 0.3) 5px 5px 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #411c63;
+}
+
+@media screen and (max-width: 960px) {
+    .layout_grid {
+        padding: 1rem;
+    }
+
+    .layout_body_card {
+        padding: 0.5rem;
+        margin-bottom: 2rem;
+    }
+}

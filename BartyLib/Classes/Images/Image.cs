@@ -27,8 +27,8 @@ namespace BartyLib.Classes.Images
         public Image(string name, string fileExtension)
         {
             Id = Guid.NewGuid();
-            LocalPath = $"./wwwroot/img/upload/{Id}.{fileExtension}";
-            RemotePath = $"https://lifeofbarty.danknet.uk/img/upload/{Id}.{fileExtension}";
+            LocalPath = $"./wwwroot/img/{Id}.{fileExtension}";
+            RemotePath = $"https://lifeofbarty.danknet.uk/img/{Id}.{fileExtension}";
             Name = name;
             FileExtension = fileExtension;
         }

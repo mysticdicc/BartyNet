@@ -59,7 +59,27 @@ h1:focus {
     text-align: start;
 }
 
-.card_side {
+.recent_post_thumbnail {
+    max-width: 100%;
+    filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
+    line-height: 0;
+    margin: auto;
+    padding: 1rem;
+    border-radius: 2rem;
+}
+
+.recent_card_back {
+    border: solid;
+    border-width: 1px;
+    border-color: #411c63;
+    border-radius: 1rem;
+    width: 100%;
+    z-index: 100;
+    background-color: #602a91;
+    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+}
+
+.recent_card_side {
     background-color: #411c63;
     width: 100%;
     height: 100%;
@@ -69,7 +89,7 @@ h1:focus {
     display: flex;
 }
 
-.card_top {
+.recent_card_top {
     background-color: #411c63;
     width: 100%;
     border-radius: 0rem 1rem 0rem 0rem;
@@ -78,7 +98,41 @@ h1:focus {
     display: flex;
 }
 
-.header_image {
+@media screen and (max-width: 960px) {
+    .recent_card_side {
+        display: none;
+    }
+
+    .recent_card_top {
+        border-radius: 1rem 1rem 0rem 0rem;
+    }
+}
+
+.post_vw_image {
+    border-radius: 1rem;
+    max-height: 19.5rem;
+    max-width: 100%;
+    scale: 90%;
+    filter: drop-shadow(5px 5px 5px rgba(20, 20, 20, 0.15));
+    line-height: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.posts_header {
+    width: 100%;
+    background-color: #411c63;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;
+    margin-top: 1rem;
+}
+
+.home_header_image {
     border-radius: 1rem;
     max-height: 20rem;
     max-width: 100%;
@@ -88,15 +142,7 @@ h1:focus {
 }
 
 @media screen and (max-width: 960px) {
-    .card_side {
-        display: none;
-    }
-
-    .header_image {
+    .home_header_image {
         max-height: 30rem;
-    }
-
-    .card_top {
-        border-radius: 1rem 1rem 0rem 0rem;
     }
 }
