@@ -21,11 +21,11 @@
             <MudItem xs="12" Style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; color: white;">
                 @((MarkupString)(Markdown.ToHtml(websitePost.Body)))
             </MudItem>
-            @if (websitePost.Images.Count > 0)
+            @if (websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.PostImage).ToList().Count > 0)
             {
                 <MudItem xs="12" Style="height: 20rem;">
                     <MudCarousel TData="object" Style="height: 19.5rem;">
-                        @foreach (Image image in websitePost.Images)
+                        @foreach (Image image in websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.PostImage).ToList())
                         {
                             <MudCarouselItem Style="width: 100%; display: flex;">
                                 <MudImage src="@image.RemotePath" class="post_vw_image" Fluid="true" ObjectFit="ObjectFit.Contain" />

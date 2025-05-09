@@ -3,7 +3,7 @@
 <div style="padding: 1rem; width: 100%;">
     <div style="border: solid; border-width: 1px; border-color: white; border-radius: 1rem;">
         <MudGrid Spacing="1" Style="padding: 1rem;">
-            @if (null == websitePost.ThumbnailImage && null == newThumbnailString) 
+            @if (null == existingImages.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault() && null == newThumbnailString)
             {
                 <MudItem xs="12">
                     <div style="width: 6rem; height: 6rem; border-style: dashed; border-color: grey; border-width: 1px; position: relative; display: flex; justify-content: center; align-content: center; margin-bottom: 2rem;">
@@ -14,19 +14,16 @@
                         <InputFile id="thumb_upload" style="width: 0%; height: 0%; overflow: hidden;" onchange="@(args => UploadThumbnailImage(args))" accept=".png, .jpg, .jpeg" />
                     </div>
                 </MudItem>
-            } 
-            else if (null != websitePost.ThumbnailImage) 
+            }
+            else if (null != existingImages.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault())
             {
-                @if (null != thumbnailImage) 
-                {
-                    <MudItem xs="12">
-                        <div style="width: 6rem; height: 8rem; position: relative;">
-                            <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(websitePost.ThumbnailImage))" />
-                            <img src="@thumbnailImage.RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
-                        </div>
-                    </MudItem>
+                <MudItem xs="12">
+                    <div style="width: 6rem; height: 8rem; position: relative;">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteThumbnailImage(websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault()!))" />
+                        <img src="@websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault().RemotePath" style="width: 6rem; height: 6rem; border-radius: 0.5rem; z-index: 100;" />
+                    </div>
+                </MudItem>
 
-                }
             } 
             else if (null != newThumbnailString) 
             {
@@ -55,7 +52,7 @@
 
                     <InputFile id="upload" style="width: 0%; height: 0%; overflow: hidden;" onchange="@(args => UploadImage(args))" accept=".png, .jpg, .jpeg" />
                 </div>
-                @foreach (Image image in existingImages) 
+                @foreach (Image image in existingImages.Where(x => x.ImageTypeIs == Image.ImageType.PostImage).ToList())
                 {
                     <div style="width: 6rem; height: 8rem; position: relative;">
                         <MudIcon Icon="@Icons.Material.Filled.Delete" Style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 150;" Size="Size.Small" onclick="@(() => DeleteImage(image))" />
@@ -87,7 +84,6 @@
     List<Image> newImages = [];
     List<Image> existingImages = [];
 
-    ThumbnailImage? thumbnailImage;
     string? newThumbnailString;
 
     bool bodyError;
@@ -103,10 +99,6 @@
         else 
         {
             isNew = false;
-            if (null != websitePost.ThumbnailImage) 
-            {
-                thumbnailImage = websitePost.ThumbnailImage;
-            }
 
             if (websitePost.Images.Count > 0) 
             {
@@ -128,8 +120,6 @@
             {
                 websitePost.Images.AddRange(newImages);
             }
-
-            websitePost.ThumbnailImage = thumbnailImage;
 
             if (isNew)
             {
@@ -153,7 +143,7 @@
     {
         var name = args.File.Name.Split('.')[0];
         var ext = args.File.Name.Split('.')[1];
-        var image = new Image(name, ext);
+        var image = new Image(name, ext, Image.ImageType.PostImage);
         string base64 = await Image.ConvertToBase64(args.File.OpenReadStream(10000000));
         image.Base64String = base64;
 
@@ -165,12 +155,12 @@
     {
         var name = args.File.Name.Split('.')[0];
         var ext = args.File.Name.Split('.')[1];
-        var image = new ThumbnailImage(name, ext);
+        var image = new Image(name, ext, Image.ImageType.ThumbnailImage);
         string base64 = await Image.ConvertToBase64(args.File.OpenReadStream(10000000));
         image.Base64String = base64;
 
+        newImages.Add(image);
         newThumbnailString = $"data:{args.File.ContentType};base64, {base64}";
-        thumbnailImage = image;
     }
 
     void DeleteImage(string base64) 
@@ -182,6 +172,7 @@
     void DeleteImage(Image image) 
     {
         websitePost.Images.Remove(image);
+        existingImages = websitePost.Images;
         StateHasChanged();
     }
 
@@ -191,10 +182,10 @@
         StateHasChanged();
     }
 
-    void DeleteThumbnailImage(ThumbnailImage image)
+    void DeleteThumbnailImage(Image image)
     {
-        thumbnailImage = null;
-        websitePost.ThumbnailImage = null;
+        websitePost.Images.Remove(image);
+        existingImages = websitePost.Images;
         StateHasChanged();
     }
 

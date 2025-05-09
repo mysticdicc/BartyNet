@@ -4,8 +4,11 @@
     <div style="width: 100%; border-radius: 1rem; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px; border-color: #411c63; border-style: solid; border-width: 1px;">
         <div class="mkd_edit_toolbar">
             <div style="padding: 0.5rem; display: flex; height: 100%;">
-                <MudIcon Icon="@Icons.Material.Filled.Preview" Class="mkd_edit_button" onclick="@(() => OnClickPreview())" />
-                <MudIcon Icon="@Icons.Material.Filled.ListAlt" Class="mkd_edit_button" onclick="@(() => OnInsertList())" />
+                <div class="mkd_drop_btn" onclick="@(() => OnClickPreview())" >
+                    <div class="mkd_drop_btn_text">
+                        Preview
+                    </div>
+                </div>
                 <div class="mkd_dropdown">
                     <div class="mkd_drop_btn">
                         <div class="mkd_drop_btn_text">
@@ -75,6 +78,25 @@
                         <div class="mkd_cnt_button" onclick="@(() => InsertStrikethrough())">
                             <div class="mkd_drop_btn_text">
                                 <s>Strikethrough</s>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mkd_dropdown">
+                    <div class="mkd_drop_btn">
+                        <div class="mkd_drop_btn_text">
+                            Lists
+                        </div>
+                    </div>
+                    <div class="mkd_dropdown_cnt">
+                        <div class="mkd_cnt_button" onclick="@(() => OnInsertList(true))">
+                            <div class="mkd_cnt_btn_text">
+                                Bullet
+                            </div>
+                        </div>
+                        <div class="mkd_cnt_button" onclick="@(() => OnInsertList(false))">
+                            <div class="mkd_cnt_btn_text">
+                                Numbered
                             </div>
                         </div>
                     </div>
@@ -149,9 +171,16 @@
         await JSRuntime.InvokeVoidAsync("insertAtCurrentPos", markdown, dotNetObj);
     }
 
-    async Task OnInsertList() 
+    async Task OnInsertList(bool bullets) 
     {
-        await InsertMarkdownFunction("* list item\n* list item\n* list item");
+        if (bullets) 
+        {
+            await InsertMarkdownFunction("\n* list item\n* list item\n* list item\n");
+        }
+        else
+        {
+            await InsertMarkdownFunction("\n1. list item\n2. list item\n3. list item\n");
+        }
     }
 
     async Task InsertHeader(int header) 
@@ -159,25 +188,25 @@
         switch(header) 
         {
             case 1:
-                await InsertMarkdownFunction("\n# header");
+                await InsertMarkdownFunction("\n# header\n");
                 return;
             case 2:
-                await InsertMarkdownFunction("\n## header");
+                await InsertMarkdownFunction("\n## header\n");
                 return;
             case 3:
-                await InsertMarkdownFunction("\n### header");
+                await InsertMarkdownFunction("\n### header\n");
                 return;
         }
     }
 
     async Task InsertBold() 
     {
-        await InsertMarkdownFunction("**bold text**");
+        await InsertMarkdownFunction("\n**bold text**\n");
     }
 
     async Task InsertItalic() 
     {
-        await InsertMarkdownFunction("*italic text*");
+        await InsertMarkdownFunction("\n*italic text*\n");
     }
 
     async Task InsertLink(string title, string url)

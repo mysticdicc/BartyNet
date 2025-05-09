@@ -8,12 +8,12 @@
             <form action="authentication/logout" method="post" style="height: 100%; width: fit-content;">
                 <AntiforgeryToken />
                 <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Logout" class="navlink" style="height: 100%; width: fit-content;" Variant="Variant.Text" />
+                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Logout" Edge="Edge.Start" class="navlink" Color="Color.Tertiary"/>
             </form>
         </Authorized>
         <NotAuthorized>
             <a href="authentication/login" style="height: 100%; width: 100%; width: fit-content;">
-                <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Person" class="navlink" style="height: 100%; width: fit-content;" Variant="Variant.Text" />
+                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Person" Edge="Edge.Start" class="navlink" Color="Color.Tertiary"/>
             </a>
         </NotAuthorized>
     </AuthorizeView>

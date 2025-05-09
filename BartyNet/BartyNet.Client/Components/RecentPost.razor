@@ -1,12 +1,12 @@
 ﻿@inject NavigationManager NavManager
 
-<div style="padding: 1rem; width: 100%;">
+<div style="padding-top: 0.1rem; padding-bottom: 0.8rem; padding-left: 1rem; padding-right: 1rem; width: 100%;">
     <MudGrid Spacing="0" Class="recent_card_back">
-        @if (null != websitePost.ThumbnailImage)
+        @if (null != websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault())
         {
             <MudItem lg="2" md="3" sm="0">
                 <div class="recent_card_side">
-                    <MudImage Src="@websitePost.ThumbnailImage.RemotePath" class="recent_post_thumbnail" Fluid="true" ObjectFit="ObjectFit.Contain" />
+                    <MudImage Src="@websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault()!.RemotePath" class="recent_post_thumbnail" Fluid="true" ObjectFit="ObjectFit.Contain" />
                 </div>
             </MudItem>
             <MudItem lg="10" md="9" sm="12" Style="height: 100%;">

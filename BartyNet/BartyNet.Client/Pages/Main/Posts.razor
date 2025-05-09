@@ -5,7 +5,7 @@
 
 @if (null != postType)
 {
-    <div style="width: 100%; padding-right: 1rem; padding-left: 1rem;">
+    <div style="width: 100%; padding: 1rem;">
         <div class="posts_header">
             <MudText Typo="Typo.h3">
                 @postType.Value
@@ -34,12 +34,12 @@
         <AuthorizeView>
             <Authorized>
                 <div style="margin-left: 1rem; margin-right: 1rem;">
-                    <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex;">
-                        <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit(post.Id))" Style="padding-left: 1rem;">Edit</MudButton>
+                            <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit(post.Id))" Style="padding-left: 1rem;" Color="Color.Tertiary"/>
                         <MudText Typo="Typo.body2" Style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;" Align="Align.Center">
                             @post.Id
                         </MudText>
-                        <MudButton EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => OnCLickDelete(post))" Style="padding-right: 1rem; margin-right: 0; margin-left: auto;">Delete</MudButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OnCLickDelete(post))" Color="Color.Tertiary" Style="padding-right: 1rem; margin-right: 0; margin-left: auto;"/>
                     </div>
                 </div> 
             </Authorized>
@@ -55,7 +55,10 @@
         }
     }
 }
-
+else 
+{
+    <MudProgressCircular Indeterminate="true" Style="margin-left: auto; margin-right: auto;"/>
+}
 
 @code {
     [Parameter] required public string postTypeString { get; set; }
