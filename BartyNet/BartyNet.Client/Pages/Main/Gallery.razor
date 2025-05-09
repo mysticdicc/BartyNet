@@ -1,0 +1,30 @@
+﻿@inject ImageAPI ImageAPI
+@page "/gallery/{imageTypeString}"
+
+<PageTitle>Gallery</PageTitle>
+
+@if (null != imageType) 
+{
+    <ImageMosaic ImageType="@imageType.Value" />
+}
+
+@code {
+    [Parameter] required public string imageTypeString { get; set; }
+    Image.ImageType? imageType { get; set; }
+
+    List<Image> images = [];
+
+    async protected override Task OnParametersSetAsync()
+    {
+        if (Enum.TryParse<Image.ImageType>(imageTypeString, true, out var parsed))
+        {
+            imageType = parsed;
+        }
+        else
+        {
+            imageType = null;
+        }
+
+        await base.OnParametersSetAsync();
+    }
+}

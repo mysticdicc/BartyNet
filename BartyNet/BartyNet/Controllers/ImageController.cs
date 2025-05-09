@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using BartyLib.Classes.Images;
+using BartyLib.Classes.Posts;
+using static BartyLib.Classes.Posts.WebsitePost;
 
 namespace BartyNet.Controllers
 {
@@ -37,6 +39,15 @@ namespace BartyNet.Controllers
             return JsonConvert.SerializeObject(image);
         }
 
+        [HttpGet]
+        [Route("[controller]/get/bytype")]
+        public string GetByType(string imageType)
+        {
+            using var db = _PortfolioFactory.CreateDbContext();
+            var imageTypeIs = Enum.Parse<Image.ImageType>(imageType);
+            return JsonConvert.SerializeObject(db.Images.Where(x => x.ImageTypeIs == imageTypeIs).ToList());
+        }
+
         [HttpPost]
         [Authorize]
         [Route("[controller]/post/new")]
@@ -50,14 +61,6 @@ namespace BartyNet.Controllers
                 try
                 {
                     await db.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    return TypedResults.BadRequest(ex.Message);
-                }
-
-                try
-                {
                     await Image.SaveToFile(image.Base64String, image.LocalPath);
                     return TypedResults.Ok(image);
                 }

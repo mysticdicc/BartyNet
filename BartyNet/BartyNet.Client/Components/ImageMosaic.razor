@@ -1,0 +1,148 @@
+﻿@inject ImageAPI ImageAPI
+@inject IJSRuntime JSRuntime
+
+<AuthorizeView>
+    <Authorized>
+        <div style="padding: 2rem;">
+            <div style="width: 6rem; height: 6rem; border-style: dashed; border-color: grey; border-width: 1px; position: relative; display: flex; justify-content: center; align-content: center; margin-bottom: 2rem;">
+                <label for="upload">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Style="width: 100%; height: 100%;" Size="Size.Small" />
+                </label>
+
+                <InputFile id="upload" style="width: 0%; height: 0%; overflow: hidden;" onchange="@(args => UploadImage(args))" accept=".png, .jpg, .jpeg" />
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+<div style="padding-left: 1rem; padding-bottom: 1rem; padding-right: 1rem;">
+    <div class="mosaic_row">
+        <div class="mosaic_column">
+            @foreach (Image image in imageLists[1])
+            {
+                <div style="position: relative">
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInFull" Style="position: absolute; top: 1rem; right: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickExpand(image.RemotePath))" Variant="Variant.Outlined" />
+                    <AuthorizeView>
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Style="position: absolute; left: 1rem; top: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickDelete(image))" Variant="Variant.Outlined" />
+                        </Authorized>
+                    </AuthorizeView>
+                    <img src="@image.RemotePath"/>
+                </div>
+            }
+        </div>
+        <div class="mosaic_column">
+            @foreach (Image image in imageLists[2])
+            {
+                <div style="position: relative">
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInFull" Style="position: absolute; top: 1rem; right: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickExpand(image.RemotePath))" Variant="Variant.Outlined" />
+                    <AuthorizeView>
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Style="position: absolute; left: 1rem; top: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickDelete(image))" Variant="Variant.Outlined" />
+                        </Authorized>
+                    </AuthorizeView>
+                    <img src="@image.RemotePath"/>
+                </div>
+            }
+        </div>
+        <div class="mosaic_column">
+            @foreach (Image image in imageLists[3])
+            {
+                <div style="position: relative">
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInFull" Style="position: absolute; top: 1rem; right: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickExpand(image.RemotePath))" Variant="Variant.Outlined" />
+                    <AuthorizeView>
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Style="position: absolute; left: 1rem; top: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickDelete(image))" Variant="Variant.Outlined" />
+                        </Authorized>
+                    </AuthorizeView>
+                    <img src="@image.RemotePath"/>
+                </div>
+            }
+        </div>
+        <div class="mosaic_column">
+            @foreach (Image image in imageLists[4])
+            {
+                <div style="position: relative">
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInFull" Style="position: absolute; top: 1rem; right: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickExpand(image.RemotePath))" Variant="Variant.Outlined" />
+                    <AuthorizeView>
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Style="position: absolute; left: 1rem; top: 1rem;" Color="Color.Tertiary" OnClick="@(() => OnClickDelete(image))" Variant="Variant.Outlined" />
+                        </Authorized>
+                    </AuthorizeView>
+                    <img src="@image.RemotePath"/>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required Image.ImageType ImageType { get; set; }
+    List<Image> images = [];
+    Dictionary<int, List<Image>> imageLists = new();
+
+    async protected override Task OnParametersSetAsync()
+    {
+        for (int i = 1; i < 5; i++) 
+        {
+            if(!imageLists.ContainsKey(i))
+            {
+                imageLists.Add(i, new List<Image>());
+            }
+            else
+            {
+                imageLists[i] = new List<Image>();
+            }
+        }
+
+        await FetchImages();
+        int listCount = 1;
+
+        foreach (var image in images) 
+        {
+            imageLists[listCount].Add(image);
+
+            if (listCount == 4) 
+            {
+                listCount = 1;
+            }
+            else 
+            {
+                listCount++;
+            }
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    async Task UploadImage(InputFileChangeEventArgs args)
+    {
+        if (null != ImageType)
+        {
+            var name = args.File.Name.Split('.')[0];
+            var ext = args.File.Name.Split('.')[1];
+            var image = new Image(name, ext, ImageType);
+            string base64 = await Image.ConvertToBase64(args.File.OpenReadStream(10000000));
+            image.Base64String = base64;
+
+            await ImageAPI.AddNew(image);
+            await OnParametersSetAsync();
+        }
+    }
+
+    async Task FetchImages()
+    {
+        images = await ImageAPI.GetByType(ImageType);
+    }
+
+    async Task OnClickDelete(Image image)
+    {
+        await ImageAPI.DeleteExisting(image);
+        await OnParametersSetAsync();
+    }
+
+    async Task OnClickExpand(string remotePath)
+    {
+        await JSRuntime.InvokeAsync<object>("open", remotePath, "_blank");
+    }
+}

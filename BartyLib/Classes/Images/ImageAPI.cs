@@ -39,6 +39,20 @@ namespace BartyLib.Classes.Images
             }
         }
 
+        public async Task<List<Image>> GetByType(Image.ImageType imageType) 
+        {
+            List<Image>? images = await _httpClient.GetFromJsonAsync<List<Image>>($"/image/get/bytype?imagetype={imageType}");
+
+            if (null != images)
+            {
+                return images;
+            }
+            else
+            {
+                throw new Exception("No list");
+            }
+        }
+
         public async Task AddNew(Image image)
         {
             await _httpClient.PostAsJsonAsync<Image>("/image/post/new", image);
