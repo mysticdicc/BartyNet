@@ -29,12 +29,39 @@
     </Authorized>
 </AuthorizeView>
 
-@if (null != posts) {
+@if (null != pinnedPost)
+{
+    <AuthorizeView>
+        <Authorized>
+            <div style="margin-left: 1rem; margin-right: 1rem;">
+                <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit(pinnedPost.Id))" Style="padding-left: 1rem;" Color="Color.Tertiary" />
+                    <MudText Typo="Typo.body2" Style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;" Align="Align.Center">
+                        @pinnedPost.Id
+                    </MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => OnCLickDelete(pinnedPost))" Color="Color.Tertiary" Style="padding-right: 1rem; margin-right: 0; margin-left: auto;" />
+                </div>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+
+    @if (postEditHidden[pinnedPost.Id])
+    {
+        <PostView websitePost="pinnedPost" />
+    }
+    else
+    {
+        <PostEditor websitePost="pinnedPost" editorHidden="@((e) => EditPostEventCallback(e, pinnedPost))" />
+    }
+
+}
+
+@if (null != posts && posts.Count > 0) {
     foreach (WebsitePost post in posts) {
         <AuthorizeView>
             <Authorized>
                 <div style="margin-left: 1rem; margin-right: 1rem;">
-                            <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;">
+                    <div style="background-color: #411c63; width: 100%; border-radius: 1rem; display: flex; box-shadow: rgba(20, 20, 20, 0.15) 5px 5px 5px;">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => OnClickEdit(post.Id))" Style="padding-left: 1rem;" Color="Color.Tertiary"/>
                         <MudText Typo="Typo.body2" Style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;" Align="Align.Center">
                             @post.Id
@@ -65,6 +92,7 @@ else
     WebsitePost.PostType? postType { get; set; }
 
     List<WebsitePost>? posts;
+    WebsitePost? pinnedPost;
     Dictionary<Guid, bool> postEditHidden = new();
     bool newHidden = true;
 
@@ -75,6 +103,17 @@ else
         if (Enum.TryParse<WebsitePost.PostType>(postTypeString, true, out var parsed))
         {
             postType = parsed;
+
+            if (postType == WebsitePost.PostType.Blog)
+            {
+                Guid pinned = new Guid("cee02522-0b54-46be-abe9-844c8c882a9f");
+                pinnedPost = posts.Where(x => x.Id == pinned).FirstOrDefault();
+
+                if (null != pinnedPost)
+                {
+                    posts.Remove(pinnedPost);
+                }
+            }
         }
         else
         {

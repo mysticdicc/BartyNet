@@ -23,7 +23,7 @@ namespace BartyLib.Classes.Images
         [NotMapped] public string? Base64String { get; set; }
         public Guid? PostId { get; set; }
         [JsonIgnore] public WebsitePost? WebsitePost { get; set; }
-        public enum ImageType { PostImage, ThumbnailImage, Puppy, Work, Play }
+        public enum ImageType { PostImage, ThumbnailImage, Puppy, Work, Play, InlinePost }
         public ImageType ImageTypeIs { get; set; }
 
         public Image(string name, string fileExtension, ImageType imageTypeIs)

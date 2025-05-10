@@ -1,4 +1,5 @@
 ﻿@inject WebsitePostAPI WebsitePostAPI
+@inject IJSRuntime JSRuntime
 
 @page "/home"
 
@@ -18,6 +19,9 @@
                         <MudText Typo="Typo.body1" Align="Align.Center">
                             Documenting the life and adventures of Barty the service dog
                         </MudText>
+                    </div>
+                    <div style="width: 100%; display: flex; padding-top: 1rem; padding-bottom: 1rem;">
+                        <img src="/img/web/instagram_icon.png" class="home_insta" onclick="@(() => OpenInstagram())" />
                     </div>
                 </div>
             </div>
@@ -53,7 +57,13 @@
         await base.OnInitializedAsync();
     }
 
-    async Task FetchRecentPosts() {
+    async Task FetchRecentPosts() 
+    {
         recentPosts = await WebsitePostAPI.GetRecentByType(WebsitePost.PostType.Blog);
+    }
+
+    async Task OpenInstagram() 
+    {
+        await JSRuntime.InvokeAsync<object>("open", "https://www.instagram.com/the_life_of_barty22/", "_blank");
     }
 }

@@ -158,23 +158,19 @@ namespace BartyNet.Controllers
 
             if (guid != null)
             {
-                var item = db.WebsitePosts.FirstOrDefault(x => x.Id == guid);
+                var item = db.WebsitePosts.Include(x => x.Images).FirstOrDefault(x => x.Id == guid);
 
                 if (item != null)
                 {
                     try
                     {
-                        foreach (Image image in item.Images)
-                        {
-                            if (null != image.Base64String)
-                            {
-                                await Image.DeleteFile(image.LocalPath);
-                                var dbImage = db.Images.Find(image.Id);
+                        foreach (Image image in item.Images) {
+                            await Image.DeleteFile(image.LocalPath);
+                            var dbImage = db.Images.Find(image.Id);
 
-                                if (null != dbImage)
-                                {
-                                    db.Images.Remove(dbImage);
-                                }
+                            if (null != dbImage)
+                            {
+                                db.Images.Remove(dbImage);
                             }
                         }
 

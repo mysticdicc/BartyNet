@@ -4,12 +4,12 @@
     <MudGrid Spacing="0" Class="recent_card_back">
         @if (null != websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault())
         {
-            <MudItem lg="2" md="3" sm="0">
+            <MudItem lg="3" md="0">
                 <div class="recent_card_side">
                     <MudImage Src="@websitePost.Images.Where(x => x.ImageTypeIs == Image.ImageType.ThumbnailImage).FirstOrDefault()!.RemotePath" class="recent_post_thumbnail" Fluid="true" ObjectFit="ObjectFit.Contain" />
                 </div>
             </MudItem>
-            <MudItem lg="10" md="9" sm="12" Style="height: 100%;">
+            <MudItem lg="9" md="12" Style="height: 100%;">
                 <div class="recent_card_top">
                     <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-left: auto; margin-right: auto; padding: 0.5rem;">
                         @websitePost.Title

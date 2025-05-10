@@ -80,6 +80,11 @@
                                 <s>Strikethrough</s>
                             </div>
                         </div>
+                        <div class="mkd_cnt_button" onclick="@(() => InsertLineBreak())">
+                            <div class="mkd_drop_btn_text">
+                                Line Break
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="mkd_dropdown">
@@ -221,6 +226,11 @@
 
     async Task InsertStrikethrough() 
     {
-        await InsertMarkdownFunction("<s>strikethrough text</s>");
+        await InsertMarkdownFunction("\n<s>strikethrough text</s>\n");
+    }
+
+    async Task InsertLineBreak() 
+    {
+        await InsertMarkdownFunction("\n<br>\n");
     }
 }
