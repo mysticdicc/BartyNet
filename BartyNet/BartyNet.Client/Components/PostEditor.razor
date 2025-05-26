@@ -109,27 +109,36 @@
         base.OnInitialized();
     }
 
-    async Task OnClickSave() {
+    async Task OnClickSave() 
+    {
+        Console.WriteLine("Save event fired");
+
         if (titleError || bodyError) 
         {
             return;
         } 
         else 
         {
+            try 
+            {
+                if (isNew)
+                {
+                    await WebsitePostAPI.AddPost(websitePost);
+                    await editorHidden.InvokeAsync(true);
+                }
+                else
+                {
+                    await WebsitePostAPI.UpdatePost(websitePost);
+                    await editorHidden.InvokeAsync(true);
+                }
+            } 
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             if (newImages.Count > 0)
             {
                 websitePost.Images.AddRange(newImages);
-            }
-
-            if (isNew)
-            {
-                await WebsitePostAPI.AddPost(websitePost);
-                await editorHidden.InvokeAsync(true);
-            }
-            else
-            {
-                await WebsitePostAPI.UpdatePost(websitePost);
-                await editorHidden.InvokeAsync(true);
             }
         }
     }

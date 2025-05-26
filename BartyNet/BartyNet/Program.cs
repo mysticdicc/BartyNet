@@ -9,6 +9,7 @@ using BartyNet.Data;
 using BartyLib.Classes.Images;
 using BartyLib.Classes.Posts;
 using MudBlazor;
+using BartyNet.Client.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,10 +26,12 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("EntraStuff"));
 builder.Services.AddAuthorization();
 
+var baseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress")!);
+
 builder.Services.AddScoped(sp =>
 {
     NavigationManager navigation = sp.GetRequiredService<NavigationManager>();
-    return new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress")!) };
+    return new HttpClient { BaseAddress = baseAddress };
 });
 builder.Services.AddHttpClient();
 
@@ -36,8 +39,7 @@ builder.Services.AddDbContextFactory<BartyDb>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQL"))
 );
 
-builder.Services.AddTransient<ImageAPI>();
-builder.Services.AddTransient<WebsitePostAPI>();
+SharedServices.Register(builder.Services, baseAddress);
 
 var app = builder.Build();
 

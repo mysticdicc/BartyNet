@@ -1,5 +1,6 @@
 using BartyLib.Classes.Images;
 using BartyLib.Classes.Posts;
+using BartyNet.Client.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
@@ -12,13 +13,16 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthenticationStateDeserialization();
 
+var baseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress")!);
+
 builder.Services.AddScoped(sp =>
 {
     NavigationManager navigation = sp.GetRequiredService<NavigationManager>();
-    return new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress")!) };
+    return new HttpClient { BaseAddress = baseAddress };
 });
+builder.Services.AddHttpClient();
 
-builder.Services.AddTransient<ImageAPI>();
-builder.Services.AddTransient<WebsitePostAPI>();
+
+SharedServices.Register(builder.Services, baseAddress);
 
 await builder.Build().RunAsync();
